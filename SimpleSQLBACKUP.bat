@@ -2,7 +2,6 @@ echo off
 cls
 
 
-
 :: Formato do Arquivo Nome-Data (exemplo>> MyDatabase-2009-5-19_1700.bak)
 
 For /f "tokens=1-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%a-%%b)
@@ -35,3 +34,7 @@ echo ----------------------------------------
 sqlcmd -U %LOGIN% -P %PASSWORD% -S %SERVERNAME% -d master -Q "BACKUP DATABASE [%DATABASENAME%] TO DISK = N'%BACKUPFILENAME%' WITH INIT , NOUNLOAD , NAME = N'%DATABASENAME% backup', NOSKIP , STATS = 10, NOFORMAT"
 echo.
 
+:: Comando para deixar apenas os 2 backups mais recentes. Para mudar o numero basta alterar o parametro skip.
+
+for /f "skip=2 delims=" %%F in ('dir %BACKUPPATH%\*.bak /s/b/o-d/a-d') do del "%%F"
+pause
